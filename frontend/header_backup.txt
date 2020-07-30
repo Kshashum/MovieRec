@@ -1,0 +1,81 @@
+import React from "react";
+import { NavLink } from "react-router-dom";
+class Header extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { search: "", suggestions: [] };
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleClick = this.handleClick.bind(this);
+  }
+  handleClick() {
+    this.props.handleSearch("");
+  }
+  handleChange(event) {
+    const { name, value } = event.target;
+    if (value.length > 3) {
+      fetch("/api/v1/autocomplete?search=" + value)
+        .then((res) => res.json())
+        .then((res) => {
+          this.setState({
+            suggestions: res.map((item) => {
+              return item["Title"];
+            }),
+            [name]: value,
+          });
+        })
+        .catch((err) => {
+          console.log("error is :" + err.message);
+        });
+      console.log(this.state.suggestions);
+    } else {
+      this.setState(() => {
+        return { [name]: value, suggestions: [] };
+      });
+    }
+  }
+  handleSubmit(event) {
+    event.preventDefault();
+    this.props.handleSearch(this.state.search);
+    this.setState({ search: "" });
+  }
+  render() {
+    return (
+      <header style={{ backgroundColor: "#000000", height: "3rem" }}>
+        <nav>
+          <NavLink to="/">
+            <button className="btn btn-danger" onClick={this.handleClick}>
+              TopMovies
+            </button>
+          </NavLink>
+          {" | "}
+          <NavLink to="/recommendations">
+            <button className="btn btn-danger">Recommendations</button>
+          </NavLink>
+          {" | "}
+          <NavLink to="/login">
+            <button className="btn btn-danger">Login</button>
+          </NavLink>
+          <form
+            style={{ float: "right" }}
+            className="form-inline"
+            onSubmit={this.handleSubmit}
+          >
+            <div>
+              <input
+                placeholder="search here"
+                value={this.state.search}
+                name="search"
+                onChange={this.handleChange}
+                className="form-control mr-sm-2"
+              ></input>
+            </div>
+            <button className="btn btn-danger">Search</button>
+          </form>
+        </nav>
+        <br />
+      </header>
+    );
+  }
+}
+export default Header;
