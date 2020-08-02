@@ -1,9 +1,9 @@
 db.users.insert([
   {
-    firstName: "Krishna Chaitanya",
-    lastName: "Shashum",
-    email: "k.shashum@gmail.com",
-    username: "kshashum",
+    firstName: "Walter",
+    lastName: "White",
+    email: "walter@gmail.com",
+    username: "heisenberg",
     password: "12345678",
     watchedMovies: [],
     recommendedMovies: [],

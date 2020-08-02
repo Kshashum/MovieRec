@@ -1,5 +1,5 @@
 const express = require("express");
-const { remove } = require("../models/userModel");
+const { remove, update } = require("../models/userModel");
 function userRouter(User) {
   const userRoute = express.Router();
   userRoute.route("/Users").get((req, res) => {
@@ -24,6 +24,14 @@ function userRouter(User) {
       return res.json({ created: false }).status(409);
     });
     return res.json({ created: true }).status(201);
+  });
+  userRoute.route("/UsersUpdate").post((req, res) => {
+    const { body } = req;
+    User.updateOne({ _id: body._id }, { watchedMovies: body.watchedMovies })
+      .then((data) => {
+        return res.status(200);
+      })
+      .catch((err) => console.log("error is " + err.message));
   });
   return userRoute;
 }

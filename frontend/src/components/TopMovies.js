@@ -3,13 +3,27 @@ import MovieCard from "./MovieCard";
 function TopMovies(props) {
   let MList;
   if (props.searchMovies.length > 0) {
-    MList = props.searchMovies.map((item) => (
-      <MovieCard {...item} key={item.imdbId} />
-    ));
+    MList = props.searchMovies.map((item) => {
+      return (
+        <MovieCard
+          {...item}
+          key={item.imdbId}
+          watched={props.watchedMovies.includes(item.imdbId) ? true : false}
+          ChangeToWatched={props.ChangeToWatched}
+        />
+      );
+    });
   } else {
-    MList = props.topmovies.map((item) => (
-      <MovieCard {...item} key={item.imdbId} />
-    ));
+    MList = props.topmovies.map((item) => {
+      return (
+        <MovieCard
+          {...item}
+          key={item.imdbId}
+          watched={props.watchedMovies.includes(item.imdbId) ? true : false}
+          ChangeToWatched={props.ChangeToWatched}
+        />
+      );
+    });
   }
   return (
     <div style={{ marginLeft: "3%", marginTop: "2%", marginBottom: "2%" }}>

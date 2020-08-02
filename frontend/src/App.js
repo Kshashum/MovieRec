@@ -18,10 +18,23 @@ class App extends React.Component {
       recommendedMovies: [],
       searchMovies: [],
       watchedMovies: [],
+      _id: "",
     };
     this.handleLogin = this.handleLogin.bind(this);
     this.handleSearch = this.handleSearch.bind(this);
     this.handleLogout = this.handleLogout.bind(this);
+    this.ChangeToWatched = this.ChangeToWatched.bind(this);
+  }
+  ChangeToWatched(event, imdbId) {
+    event.preventDefault();
+    if (this.state.watchedMovies.includes(imdbId)) {
+      const res = this.state.watchedMovies.filter((item) => item !== imdbId);
+      this.setState({ watchedMovies: res });
+    } else {
+      let res = this.state.watchedMovies;
+      res.push(imdbId);
+      this.setState({ watchedMovies: res });
+    }
   }
   componentDidMount() {
     fetch("/api/v1/TopMovies")
@@ -34,6 +47,17 @@ class App extends React.Component {
       });
   }
   handleLogout(val) {
+    const data = {
+      _id: this.state._id,
+      watchedMovies: this.state.watchedMovies,
+    };
+    fetch("/api/v1/UsersUpdate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    }).catch((err) => console.log("error is " + err.message));
     this.setState({
       login: val,
       recommendedMovies: [],
@@ -64,6 +88,7 @@ class App extends React.Component {
       login: data["login"],
       recommendedMovies: data["recommendedMovies"],
       watchedMovies: data["watchedMovies"],
+      _id: data["_id"],
     });
   }
   render() {
@@ -79,9 +104,11 @@ class App extends React.Component {
               exact
               component={() => (
                 <TopMovies
+                  watchedMovies={this.state.watchedMovies}
                   topmovies={this.state.topmovies}
                   searchMovies={this.state.searchMovies}
                   handleSearch={this.handleSearch}
+                  ChangeToWatched={this.ChangeToWatched}
                 />
               )}
             />
