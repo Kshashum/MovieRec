@@ -27,13 +27,15 @@ class App extends React.Component {
   }
   ChangeToWatched(event, imdbId) {
     event.preventDefault();
-    if (this.state.watchedMovies.includes(imdbId)) {
-      const res = this.state.watchedMovies.filter((item) => item !== imdbId);
-      this.setState({ watchedMovies: res });
-    } else {
-      let res = this.state.watchedMovies;
-      res.push(imdbId);
-      this.setState({ watchedMovies: res });
+    if (this.state.login) {
+      if (this.state.watchedMovies.includes(imdbId)) {
+        const res = this.state.watchedMovies.filter((item) => item !== imdbId);
+        this.setState({ watchedMovies: res });
+      } else {
+        let res = this.state.watchedMovies;
+        res.push(imdbId);
+        this.setState({ watchedMovies: res });
+      }
     }
   }
   componentDidMount() {
@@ -115,7 +117,13 @@ class App extends React.Component {
             <Route
               path="/recommendations"
               component={() => (
-                <Recommendations recommended={this.state.recommendedMovies} />
+                <Recommendations
+                  watchedMovies={this.state.watchedMovies}
+                  recommendedMovies={this.state.recommendedMovies}
+                  searchMovies={this.state.searchMovies}
+                  handleSearch={this.handleSearch}
+                  ChangeToWatched={this.ChangeToWatched}
+                />
               )}
             />
             <Route

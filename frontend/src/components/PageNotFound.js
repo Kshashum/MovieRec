@@ -7,7 +7,7 @@ function PageNotFound() {
         Page can not be found, check out top movies
       </h1>
       <Link to="/" className="btn btn-primary">
-        Home
+        Top Movies
       </Link>
     </div>
   );

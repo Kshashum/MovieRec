@@ -54,7 +54,9 @@ class Header extends React.Component {
           </NavLink>
           {" | "}
           <NavLink to="/recommendations">
-            <button className="btn btn-danger">Recommendations</button>
+            <button className="btn btn-danger" onClick={this.handleClick}>
+              Recommendations
+            </button>
           </NavLink>
           {" | "}
           {this.props.login ? (
