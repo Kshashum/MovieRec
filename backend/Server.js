@@ -1,10 +1,10 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const bodyParser = require("body-parser");
 const { Client } = require("@elastic/elasticsearch");
+const cors = require('cors')
 
 const app = express();
-const port = 5000;
+const port = 4000;
 const db = mongoose.connect("mongodb://localhost/moviesAPI", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -19,8 +19,8 @@ const autocompleteRouter = require("./routers/autocompleteRouter")(client);
 const searchRouter = require("./routers/searchRouter")(client);
 const userRouter = require("./routers/userRouter")(User);
 
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use(express.json());
+app.use(cors());
 
 app.use("/api/v1", movieRouter);
 app.use("/api/v1", autocompleteRouter);

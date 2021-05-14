@@ -29,7 +29,7 @@ const Signup = () => {
         if(login === false) {
           setEmail("")
           setPassword("")
-          history.push("/login")
+          history.push("/signup")
         }
     }
     return (

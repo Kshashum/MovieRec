@@ -29,7 +29,7 @@ export const MovieContextProvider = props => {
     
       useEffect(() => {
         const loadMovies = async () => {
-            axios.get("http://localhost:4000/api/v1/hotels").then((res) => {
+            axios.get("http://localhost:4000/api/v1/Topmovies").then((res) => {
                 setTopMovies(res.data)
             }).catch((err) => { console.log(err.message) })
         }

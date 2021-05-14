@@ -19,11 +19,24 @@ function userRouter(User) {
   });
   userRoute.route("/Users").post((req, res) => {
     const { body } = req;
+    console.log(body)
     new User(body).save().catch((err) => {
       console.log("error is :" + err.message);
       return res.json({ created: false }).status(409);
     });
-    return res.json({ created: true }).status(201);
+    User.find({ email: body["email"] })
+    .then((data) => {
+      if (data[0]["password"] === body["password"]) {
+        data[0]["password"] = "******";
+        data[0]["login"] = true;
+        return res.json(data).status(200);
+      }
+      return res.json({ login: "false" }).status(401);
+    })
+    .catch((err) => {
+      console.log("error is :" + err.message);
+    });
+
   });
   userRoute.route("/UsersUpdate").post((req, res) => {
     const { body } = req;
