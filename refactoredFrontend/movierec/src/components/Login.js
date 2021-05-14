@@ -4,7 +4,7 @@ import {MovieContext} from '../context/moviecontext'
 import axios from 'axios'
 
 const Login = () => {
-    const { setUserid, setToken, setLogin, login } = useContext(MovieContext)
+    const { setUserid, setToken, setLogin, login,setWatchedMovies,setRocmmendedMovies } = useContext(MovieContext)
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const history = useHistory()
@@ -15,51 +15,23 @@ const Login = () => {
     }, [login, history])
     const handleSubmit = async (e) => {
         e.preventDefault()
-        axios.post('http://localhost:4000/api/v1/auth/login', { email, password }).then((res) => { return res.data }).then((data) => {
+        axios.get('http://localhost:4000/api/v1/Users', { email, password }).then((res) => { return res.data }).then((data) => {
             setToken(data.token)
             setUserid(data.userid)
-            console.log(data)
+            setWatchedMovies(data.watchedMovies)
+            setRocmmendedMovies(data.recommendedMovies)
             if (data.token) {
                 setLogin(true)
                 setPassword("")
             }
-            else {
-                history.push("/login")
-            }
+
         }).catch(err => { console.log(err.message) })
-    }
-    /* To do change the handle login to the above format
-      handleSubmit(event) {
-    event.preventDefault();
-    fetch(
-      "/api/v1/Users?email=" +
-        this.state.email +
-        "&password=" +
-        this.state.password
-    )
-      .then((res) => res.json())
-      .then((res) => {
-        let results = res.map((item) => item);
-        if (results[0]["login"]) {
-          this.setState({ login: true });
-          this.props.handleLogin(results[0]);
-        } else {
-          console.log("wrong username or password");
+        if(login === false) {
+          setEmail("")
+          setPassword("")
+          history.push("/login")
         }
-      })
-      .catch((err) => {
-        console.log("error is :" + err.message);
-      });
-  }
-    const handleLogin = (data) => {
-      this.setState({
-        login: data["login"],
-        recommendedMovies: data["recommendedMovies"],
-        watchedMovies: data["watchedMovies"],
-        _id: data["_id"],
-      });
     }
-    */
     return (
         <div
             className="container"
@@ -97,7 +69,7 @@ const Login = () => {
                         onChange={(e) => { setPassword(e.target.value) }}
                     ></input>
                 </div>
-                <button className="btn btn-primary" onClick={handleSubmit}>Submit</button>
+                <button className="btn btn-primary" onClick={(e)=>handleSubmit(e)}>Submit</button>
                 {"  |  "}
                 <Link to="/signup" className="btn btn-primary">
                     Signup

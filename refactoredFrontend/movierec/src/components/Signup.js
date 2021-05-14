@@ -5,7 +5,7 @@ import { useHistory } from 'react-router-dom'
 import { MovieContext } from '../context/moviecontext'
 
 const Signup = () => {
-    const { setToken, setUserid, userid, login, setLogin } = useContext(MovieContext);
+    const { setToken, setUserid, login, setLogin } = useContext(MovieContext);
     const [name, setName] = useState("")
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
@@ -17,17 +17,21 @@ const Signup = () => {
     }, [login, history])
     const handleSubmit = async (e) => {
         e.preventDefault()
-        await axios.post('http://localhost:4000/api/v1/auth/register', { name, email, password }).then((res) => { return res.data }).then((data) => {
+        axios.post('http://localhost:4000/api/v1/Users', { email, password }).then((res) => { return res.data }).then((data) => {
             setToken(data.token)
             setUserid(data.userid)
-            console.log(data)
-            if (userid !== undefined) {
+            if (data.token) {
                 setLogin(true)
                 setPassword("")
             }
-        }).catch(err => { console.log(err.message) })
-    }
 
+        }).catch(err => { console.log(err.message) })
+        if(login === false) {
+          setEmail("")
+          setPassword("")
+          history.push("/login")
+        }
+    }
     return (
         <div
             className="container"
