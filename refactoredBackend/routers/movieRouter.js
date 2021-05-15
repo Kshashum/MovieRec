@@ -1,6 +1,6 @@
 const movieRouter = require("express").Router();
 const Movie = require('../models/movieModel')
-movieRouter.get('/TopMovies', function(req, res) {
+movieRouter.get('/TopMovies', async (req, res) => {
     Movie.find()
     .sort({ "IMDB Score": -1 })
     .limit(18)

@@ -4,7 +4,7 @@ import {MovieContext} from '../context/moviecontext'
 import axios from 'axios'
 
 const Login = () => {
-    const { setUserid, setToken, setLogin, login,setWatchedMovies,setRocmmendedMovies } = useContext(MovieContext)
+    const { setUserid, setToken, setLogin, login,setWatchedMovies,setRecommendedMovies } = useContext(MovieContext)
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const history = useHistory()
@@ -15,11 +15,11 @@ const Login = () => {
     }, [login, history])
     const handleSubmit = async (e) => {
         e.preventDefault()
-        axios.get('http://localhost:4000/api/v1/Users', { email, password }).then((res) => { return res.data }).then((data) => {
+        axios.get('http://localhost:4000/api/v1/auth/login', { params:{email, password} }).then((res) => { return res.data }).then((data) => {
             setToken(data.token)
             setUserid(data.userid)
             setWatchedMovies(data.watchedMovies)
-            setRocmmendedMovies(data.recommendedMovies)
+            setRecommendedMovies(data.recommendedMovies)
             if (data.token) {
                 setLogin(true)
                 setPassword("")

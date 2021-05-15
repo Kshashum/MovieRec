@@ -1,51 +1,41 @@
-const express = require("express");
-const { remove, update } = require("../models/userModel");
-function userRouter(User) {
-  const userRoute = express.Router();
-  userRoute.route("/Users").get((req, res) => {
-    const query = req.query;
-    User.find({ email: query["email"] })
-      .then((data) => {
-        if (data[0]["password"] === query["password"]) {
-          data[0]["password"] = "******";
-          data[0]["login"] = true;
-          return res.json(data).status(200);
-        }
-        return res.json({ login: "false" }).status(401);
-      })
-      .catch((err) => {
-        console.log("error is :" + err.message);
-      });
-  });
-  userRoute.route("/Users").post((req, res) => {
-    const { body } = req;
-    console.log(body)
-    new User(body).save().catch((err) => {
-      console.log("error is :" + err.message);
-      return res.json({ created: false }).status(409);
-    });
-    User.find({ email: body["email"] })
+const authRouter = require("express").Router();
+const User = require("../models/userModel")
+const jwt = require("jsonwebtoken")
+
+
+authRouter.get('/login', async (req,res)=>{
+    const {email,password}=req.query
+    User.find({email:email})
     .then((data) => {
-      if (data[0]["password"] === body["password"]) {
+    
+      if (data[0]["password"] === password) {
         data[0]["password"] = "******";
-        data[0]["login"] = true;
-        return res.json(data).status(200);
+        const token = jwt.sign({
+            _id: data[0]._id
+        }, process.env.JWTKEY, { expiresIn: '1h' });
+        return res.json({ token, userid: data[0]._id, watchedMovies:data[0].watchedMovies, recommendedMovies:data[0].recommendedMovies}).status(200)
       }
       return res.json({ login: "false" }).status(401);
     })
     .catch((err) => {
       console.log("error is :" + err.message);
+      return res.json({ login: "false" }).status(401);
     });
+})
 
-  });
-  userRoute.route("/UsersUpdate").post((req, res) => {
-    const { body } = req;
-    User.updateOne({ _id: body._id }, { watchedMovies: body.watchedMovies })
-      .then((data) => {
-        return res.status(200);
-      })
-      .catch((err) => console.log("error is " + err.message));
-  });
-  return userRoute;
-}
-module.exports = userRouter;
+authRouter.post('/signup', async (req,res)=>{
+    try {
+        const {name,email,password}=req.body
+        await new User({name,email,password}).save().then((data)=>{
+            const token = jwt.sign({
+                _id: data._id
+            }, process.env.JWTKEY, { expiresIn: '1h' });
+            return res.json({ token, userid: data._id, watchedMovies:data.watchedMovies, recommendedMovies:data.recommendedMovies}).status(201)
+        }) 
+    } catch (error) {
+        console.log(error)
+        res.json({'created':'false'})
+    }
+})
+
+module.exports = authRouter

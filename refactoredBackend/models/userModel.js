@@ -7,5 +7,5 @@ const userModel = new Schema({
   password: { type: String },
   watchedMovies: Array,
   recommendedMovies: Array,
-});
+},{collection:'users'});
 module.exports = mongoose.model("user", userModel);

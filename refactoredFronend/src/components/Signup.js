@@ -17,7 +17,7 @@ const Signup = () => {
     }, [login, history])
     const handleSubmit = async (e) => {
         e.preventDefault()
-        axios.post('http://localhost:4000/api/v1/Users', { email, password }).then((res) => { return res.data }).then((data) => {
+        axios.post('http://localhost:4000/api/v1/auth/signup', { name, email, password }).then((res) => { return res.data }).then((data) => {
             setToken(data.token)
             setUserid(data.userid)
             if (data.token) {
